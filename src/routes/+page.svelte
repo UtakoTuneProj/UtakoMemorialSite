@@ -49,6 +49,35 @@
 			body: '2025 — UTAKO TUNE は静かに閉じた。これで終わり。ここからまた始める。'
 		}
 	];
+
+	const revealOnce = (node: HTMLElement) => {
+		const show = () => node.classList.remove('hidden');
+
+		if (typeof IntersectionObserver === 'undefined') {
+			show();
+			return { destroy: () => undefined };
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						show();
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.15 }
+		);
+
+		observer.observe(node);
+
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	};
 </script>
 
 <svelte:head>
@@ -60,7 +89,7 @@
 </svelte:head>
 
 <main class="page">
-	<section class="hero">
+	<section class="hero" id="hero">
 		<div class="hero-inner">
 			<p class="overline">{sections[0].overline}</p>
 			<h1>{sections[0].title}</h1>
@@ -73,8 +102,8 @@
 	</section>
 
 	<section class="content">
-		{#each sections as section}
-			<article class="card" id={section.id}>
+		{#each sections.slice(1) as section}
+			<article class="card hidden" id={section.id} use:revealOnce>
 				<p class="section-label">{section.id}</p>
 				<div class="card-body">
 					<h2>{section.title}</h2>
@@ -115,7 +144,7 @@
 
 	.hero {
 		position: relative;
-		min-height: 75vh;
+		min-height: 100vh;
 		display: grid;
 		place-items: center;
 		padding: 4rem 1.5rem 2rem;
@@ -173,8 +202,9 @@
 	.content {
 		max-width: 980px;
 		margin: 0 auto;
-		padding: 0 1.25rem 4rem;
-		display: grid;
+		padding: 0 1.25rem 2rem;
+		display: flex;
+		flex-direction: column;
 		gap: 1.25rem;
 	}
 
@@ -186,8 +216,16 @@
 		padding: 1.4rem 1.35rem 1.5rem;
 		box-shadow: 0 15px 45px rgba(69, 37, 116, 0.08);
 		opacity: 1;
-		transform: none;
-		transition: none;
+		transform: translateY(26px);
+		transition: opacity 700ms ease, transform 700ms ease;
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+	}
+
+	.card.hidden {
+		opacity: 0;
+		transform: translateY(26px);
 	}
 
 	.card:hover {
@@ -203,6 +241,10 @@
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		margin: 0;
+	}
+
+	.card-body {
+		width: 100%;
 	}
 
 	.card-body h2 {
@@ -240,6 +282,14 @@
 		font-size: 0.95rem;
 		color: #6a5f87;
 		font-style: italic;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.card {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
 	}
 
 	@media (max-width: 720px) {
