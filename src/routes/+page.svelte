@@ -52,6 +52,35 @@
 			body: '2025年 — UTAKO TUNE はここでそっと幕を閉じます。\nこれを一つの区切りとして、関わってくれたすべての人へ、改めて感謝を込めて。\n\nありがとうございました。'
 		}
 	];
+
+	const revealOnce = (node: HTMLElement) => {
+		const show = () => node.classList.add('visible');
+
+		if (typeof IntersectionObserver === 'undefined') {
+			show();
+			return { destroy: () => undefined };
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						show();
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.5 }
+		);
+
+		observer.observe(node);
+
+		return {
+			destroy() {
+				observer.disconnect();
+			}
+		};
+	};
 </script>
 
 <svelte:head>
@@ -78,7 +107,7 @@
 	<section class="content">
 		{#each sections.slice(1) as section}
 			<article class="section-block" id={section.id}>
-				<div class="card">
+				<div class="card" use:revealOnce>
 					<p class="section-label">{section.id}</p>
 					<div class="card-body">
 						<h2>{section.title}</h2>
@@ -199,12 +228,18 @@
 		border-radius: 20px;
 		padding: 2rem;
 		box-shadow: 0 15px 45px rgba(69, 37, 116, 0.08);
-		opacity: 1;
+		opacity: 0;
 		transform: translateY(26px);
 		transition: opacity 700ms ease, transform 700ms ease;
 		width: 100%;
 		max-width: 720px;
 		margin: auto;
+	}
+
+	/* svelte-ignore css-unused-selector -- class is added dynamically by the revealOnce action */
+	:global(.card.visible) {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	.card:hover {
@@ -224,17 +259,19 @@
 
 	.card-body {
 		width: 100%;
+		display: grid;
+		gap: 0.55rem;
 	}
 
 	.card-body h2 {
-		margin: 0 0 0.55rem;
+		margin: 0;
 		font-size: 1.35rem;
 		font-weight: 700;
 		color: #2a1d44;
 	}
 
 	.card-body p {
-		margin: 0.1rem 0 0;
+		margin: 0;
 		line-height: 1.7;
 		color: #372f4f;
 		font-size: 1rem;
@@ -244,7 +281,7 @@
 	.values {
 		list-style: none;
 		padding: 0;
-		margin: 0.6rem 0 0;
+		margin: 0.2rem 0 0;
 		display: grid;
 		gap: 0.35rem;
 	}
@@ -257,8 +294,8 @@
 		color: #342a4f;
 	}
 
-	.card-body .aside {
-		margin-top: 2rem;
+	.aside {
+		margin-top: 1rem;
 		font-size: 0.95rem;
 		color: #6a5f87;
 		font-style: italic;
