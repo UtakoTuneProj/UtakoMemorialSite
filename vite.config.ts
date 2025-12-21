@@ -3,5 +3,12 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()]
+	plugins: [tailwindcss(), sveltekit()],
+	server: {
+		// Enable polling to make HMR stable across Windows/VM/shared folders
+		watch: {
+			usePolling: true,
+			interval: 150
+		}
+	}
 });
