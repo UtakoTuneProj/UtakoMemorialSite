@@ -3,8 +3,8 @@
 		{
 			id: 'hero',
 			title: 'UTAKO TUNE memorial',
-			overline: '関わってくれたすべての人へ、感謝を込めて。',
-			body: '9年間続いた個人プロジェクト UTAKO TUNE は、2025年をもって静かに幕を閉じました。\n支えてくれたすべての時間に、人に、つながりに、そして素敵な作品を作り続けてくれた人たちに、静かに感謝を込めて。'
+			underline: '関わってくれたすべての人へ、感謝を込めて。',
+			body: ['9年間続いた個人プロジェクト UTAKO TUNE は、2025年をもって静かに幕を閉じました。', '支えてくれたすべての時間に、人に、つながりに、そして素敵な作品を作り続けてくれた人たちに、静かに感謝を込めて。']
 		},
 		{
 			id: 'reflection',
@@ -17,13 +17,11 @@
 		},
 		{
 			id: 'values',
-			title: '貫いた信念',
+			title: '持ち続けた理念',
 			items: [
-				'プロダクトより人格を先に置く',
-				'量より感度、速さより誠実さ',
-				'匿名性と個性のバランスを保つ',
-				'聴く人の余白を奪わない',
-				'技術は媒介、意図は静かに'
+				{title: '埋もれた名曲へのまなざし', description: '再生数やランキングだけでは届かない楽曲たちに、光を当てたい。\n「どうしてこの曲がこの再生数なんだろう」と感じた違和感が、プロジェクトの出発点でした。'},
+				{title: '文化へのささやかな貢献', description: '個人規模のプロジェクトであっても、VOCALOID という文化に向けて、もう一本別のルートを差し出したかった。UTAKO TUNE は、そのための小さな実験場でした。'},
+				{title: '技術で世界を見通す試み', description: '深層学習やクラウドインフラなど、当時の最新技術を用いて、 「楽曲同士の近さ」を座標として捉え直す。技術は目的ではなく、視界を広げるためのレンズでした。'},
 			]
 		},
 		{
@@ -59,7 +57,7 @@
 			title: '自分自身に宛てて',
 			body: [
 				'UTAKO TUNE は、小さな個人プロジェクトでした。それでも、解析モデルを組み上げ、実際に動くサービスとして公開し、本としてまとめ、コミュニティに投げかけるところまで辿り着きました。',
-				'うまくいかなかった実験や、途中で消えていったアイデアもたくさんあります。けれど、それらを含めて、このプロジェクトは今のあなたの基礎の一部になっています。次に何かを始めるとき、「小さく作って試し、少しずつ育てていく」という感覚を、どうか忘れないでください。'
+				'うまくいかなかった実験や、途中で消えていったアイデアもたくさんあります。けれど、それらを含めて、このプロジェクトは今の自分の基礎の一部になっています。次に何かを始めるとき、「小さく作って試し、少しずつ育てていく」という感覚を、どうか忘れないでください。'
 			],
 			aside: '未来の自分へ。あなたはきっと、また新しい何かを始めるでしょう。そのとき、この言葉が少しでも役に立ちますように。'
 		},
@@ -115,9 +113,14 @@
 <main class="page">
 	<section class="hero" id="hero">
 		<div class="hero-inner">
-			<p class="overline">{sections[0].overline}</p>
+			<p class="underline">{sections[0].underline}</p>
 			<h1>{sections[0].title}</h1>
-			<p class="lead">{sections[0].body}</p>
+			<p class="lead">
+				{#each sections[0].body as paragraph}
+					{paragraph}
+					<br />
+				{/each}
+			</p>
 			<div class="scroll-cue">
 				<span>scroll</span>
 				<div class="line"></div>
@@ -135,7 +138,12 @@
 						{#if section.items}
 							<ul class="values">
 								{#each section.items as item}
-									<li>{item}</li>
+									<li>
+										<strong>{item.title}</strong>
+										{#if item.description}
+											<p>{item.description}</p>
+										{/if}
+									</li>
 								{/each}
 							</ul>
 						{:else if Array.isArray(section.body)}
@@ -160,7 +168,7 @@
 		margin: 0;
 		background: radial-gradient(160% 160% at 80% 20%, #f1eaff, #f8f6fb 45%, #fefefe);
 		color: #1f1a2c;
-		font-family: 'Manrope', 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+		font-family: 'Manrope', 'IBM Plex Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 		letter-spacing: 0.01em;
 	}
 
@@ -192,7 +200,7 @@
 		text-align: left;
 	}
 
-	.overline {
+	.underline {
 		text-transform: uppercase;
 		font-size: 0.85rem;
 		letter-spacing: 0.08em;
@@ -205,7 +213,7 @@
 		font-size: clamp(2.4rem, 4vw + 1rem, 3.4rem);
 		margin: 0 0 1rem;
 		line-height: 1.1;
-		font-family: 'Noto Serif JP', 'Times New Roman', serif;
+		font-family: 'Raleway', 'IBM Plex Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 		color: #1b0f2e;
 	}
 
@@ -308,7 +316,7 @@
 		padding: 0;
 		margin: 0.2rem 0 0;
 		display: grid;
-		gap: 0.35rem;
+		gap: 1rem;
 	}
 
 	.values li {
@@ -322,7 +330,7 @@
 	.aside {
 		margin-top: 1rem;
 		font-size: 0.95rem;
-		color: #6a5f87;
+		color: #8e86a8 !important;
 		font-style: italic;
 	}
 
