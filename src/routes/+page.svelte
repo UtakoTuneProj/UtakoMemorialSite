@@ -1,4 +1,9 @@
 <script lang="ts">
+	import image_utako from '$lib/assets/utako.jpg';
+	import image_logo from '$lib/assets/logo.svg';
+	import image_site from '$lib/assets/site_image.png';
+	import image_comiket from '$lib/assets/comiket.jpg';
+
 	const sections = [
 		{
 			id: 'hero',
@@ -46,11 +51,16 @@
 		},
 		{
 			id: 'exhibits',
-			title: 'たしかにあったものたち',
+			title: '記憶と追憶',
+			images: [
+				{ src: image_site, caption: 'UTAKO TUNEのスクリーンショット' },
+				{ src: image_utako, caption: 'UTAKO TUNEのメインキャラクター「折原 詩子」' },
+				{ src: image_logo, caption: 'UTAKO TUNEのロゴマーク。音符を鎖状に組み合わせ、中央を目に見立てています' },
+				{ src: image_comiket, caption: 'コミックマーケット97(2019冬)で頒布した際の様子' }],
 			body: [
-				'残すのは断片だけ。折原詩子という人格のフォルム、初期のロゴ、UI の試作、歌の地図。ここでは画像を置かない。思い出す人の中にだけ展示される。'
+				'当時のUTAKO TUNEの雰囲気を残すため、いくつかの画像をここに展示します。',
 			],
-			aside: '素材は別途保管。必要なら未来の自分が取りに行けばいい。'
+			aside: 'たしかにここにあったプロダクトの、ささやかな記録として。'
 		},
 		{
 			id: 'note-to-myself',
@@ -152,6 +162,16 @@
 							{/each}
 						{:else}
 							<p>{section.body}</p>
+						{/if}
+						{#if section.images}
+							<div class="image-grid">
+								{#each section.images as image}
+									<figure>
+										<img src={image.src} alt={image.caption} />
+										<figcaption>{image.caption}</figcaption>
+									</figure>
+								{/each}
+							</div>
 						{/if}
 						{#if section.aside}
 							<p class="aside">{section.aside}</p>
@@ -334,6 +354,36 @@
 		font-style: italic;
 	}
 
+	.image-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 0.5rem;
+	}
+
+	.image-grid figure {
+		margin: 0;
+		border: 1px solid #efe8ff;
+		border-radius: 14px;
+		overflow: hidden;
+		background: #fbf9ff;
+		box-shadow: 0 10px 30px rgba(69, 37, 116, 0.06);
+		display: grid;
+		grid-template-rows: auto 1fr;
+	}
+
+	.image-grid img {
+		width: 100%;
+		display: block;
+		object-fit: cover;
+	}
+
+	.image-grid figcaption {
+		padding: 0.75rem 0.9rem;
+		font-size: 0.95rem;
+		color: #342a4f;
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.card {
 			opacity: 1;
@@ -359,6 +409,10 @@
 			position: static;
 			margin-bottom: 0.35rem;
 			display: inline-block;
+		}
+
+		.image-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>
